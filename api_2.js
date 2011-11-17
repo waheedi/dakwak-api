@@ -28,15 +28,12 @@ var origins_terms = [];
 var website_terms= [];
 var res = {};
 ee.setMaxListeners(0);
-function apache(response, request) {
 
+function apache(response, request) {
 	if (request.method == "POST"){
-		
 			request.on('end', function(chunk) {
 				try {
-					
-			  	body = JSON.parse(chunk);
-				
+			  	body = JSON.parse(chunk);				
 			  } 
 				catch (SyntaxError) {
 					console.log('parse error');
