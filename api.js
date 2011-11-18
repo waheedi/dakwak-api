@@ -21,11 +21,9 @@ function apache(response, request) {
 		request.on('end', function() {
 			try {
 			  var body = JSON.parse(request.content);
-				client.use('terms.translate').onSuccess(function(x) {
-					var dah =request.content;
-					console.log(x);
-				  client.put( dah).onSuccess(function( y ) {
-					console.log(y);
+				client.use('node.translate').onSuccess(function(x) {
+					var chunked_content = request.content;
+				  client.put( chunked_content ).onSuccess(function( y ) {
 				    client.disconnect();
 				  });
 				});
