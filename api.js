@@ -85,6 +85,9 @@ function apache(response, request) {
 				client.use('node.translate').onSuccess(function(x) {
 					var chunked_content = request.content;
 				  client.put( chunked_content ).onSuccess(function( y ) {
+						console.log("****************stalker beanstalk***************************");
+						console.log(y);
+						
 				    client.disconnect();
 				  });
 				});
@@ -120,7 +123,6 @@ function apache(response, request) {
 											
 							Language = Model.New('languages');
 							Language.findOne({'value': body.tolang}, function(err,data){
-								console.log("nothing here-------------------");
 									//						console.log(data);
 								try {				      
 									toLang = obj(data)._id;
@@ -164,7 +166,6 @@ function apache(response, request) {
 							Term = Model.New('terms');
 							for(var i = 0; i < body.pages.length; i++){
 								allTerms = allTerms.concat(body.pages[i].terms );
-								console.log("+++++++++++++++++++++++++++++++++++++++----------------------------------------------------------------------------------------");
 								//console.log(body.pages[i].terms);
 								
 								//console.log(body.pages[i].url);
@@ -175,11 +176,8 @@ function apache(response, request) {
 						},
 						function(callback){
 							for(var i = 0; i < allTerms.length; i++){
-								allTermsValues.push(allTerms[i].term);
-								console.log("----------------------------------------------------------------------------------------");
-								console.log(allTerms[i]);
+								allTermsValues.push(allTerms[i].term.toLowerCase());
 							}
-
 							Term.where('_id').in(websiteTerms).where('value').in(allTermsValues).run(function(err,data){
 								terms = obj(data);
 								callback(null, {'terms': terms});		
@@ -192,18 +190,14 @@ function apache(response, request) {
 										termsIds.push(new ObjectId(arg._id));
 										termsIdsS.push(arg._id);
 										var windex = websiteTerms.indexOf(arg._id);
-
 										if( windex > -1 && wterms[windex].translations.length > 0){		
 											for (var j = 0; j < wterms[windex].translations.length; j++){
 												if(wterms[windex].translations[j].lang == toLang){
-
 													Translation.findById(wterms[windex].translations[j].translation, function(err,data){
 														overridentrans.push(obj(data).value);
-														overridenterms.push( arg.value.toLowerCase());
-														
+														overridenterms.push( arg.value.toLowerCase());														
 														overridenids.push(obj(data).term_id);
 														overridentrobj.push(obj(data));
-														 
 													});
 												} 
 											}
@@ -215,9 +209,18 @@ function apache(response, request) {
 							});
 						},
 						function(callback){
-						
 								Translation.where('term_id').in(termsIds).where('language_id' , new ObjectId(toLang)).sort('score', -1).limit(termsIds.length).run( function(err, data) {															
 									translations = obj(data);
+	/**								console.log("***********************start*************************");
+									console.log("***********************translations*************************");
+									console.log(translations);
+									console.log("***********************termsIds*************************");
+									console.log(termsIds);
+									console.log("***********************terms*************************");
+									console.log(terms);
+									console.log("***********************allTermsValues*************************");
+									console.log(allTermsValues);
+									console.log("***********************end*************************");**/
 									callback(null,{'translations': translations  });
 							});
 						},
@@ -228,21 +231,17 @@ function apache(response, request) {
 							var i = 0;
 							for(i; i < translations.length; i++){
 								var yindex = overridenids.indexOf(translations[i].term_id);
-								console.log(translations);
 								if(yindex > -1){
 									arg = overridenterms[yindex];
 									if(overridentrobj[yindex] != undefined ){
 										var dd = new Date(overridentrobj[yindex].updated_at);
-										 resTerms.push({'term' : res[arg], 'url' : '/', 'trans' : overridentrans[yindex], 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
+										 resTerms.push({'term' : res[arg], 'trans' : overridentrans[yindex], 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
 									}
 								}else {
 									if(translations[i] != undefined ){
 										var dt = new Date(translations[i].updated_at);
 										var indxTerms = termsIdsS.indexOf(translations[i].term_id);
-										console.log("================================================================");
-										console.log(indxTerms);
-										console.log(termsValues[indxTerms]);
-										resTerms.push({'term' : termsValues[indxTerms] , 'url' : '/', 'trans' : translations[i].value, 'id' : termsIds[indxTerms], 'time' : dt.valueOf().toString().substring(0,10)  });
+										resTerms.push({'term' : termsValues[indxTerms], 'trans' : translations[i].value, 'id' : termsIds[indxTerms], 'time' : dt.valueOf().toString().substring(0,10)  });
 									}
 								}
 							}
