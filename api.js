@@ -85,8 +85,6 @@ function apache(response, request) {
 				client.use('node.translate').onSuccess(function(x) {
 					var chunked_content = request.content;
 				  client.put( chunked_content ).onSuccess(function( y ) {
-						console.log("****************stalker beanstalk***************************");
-						console.log(y);
 						
 				    client.disconnect();
 				  });
@@ -235,7 +233,7 @@ function apache(response, request) {
 									arg = overridenterms[yindex];
 									if(overridentrobj[yindex] != undefined ){
 										var dd = new Date(overridentrobj[yindex].updated_at);
-										 resTerms.push({'term' : res[arg], 'trans' : overridentrans[yindex], 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
+										resTerms.push({'term' : arg, 'trans' : overridentrans[yindex], 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
 									}
 								}else {
 									if(translations[i] != undefined ){
