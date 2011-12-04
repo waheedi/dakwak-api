@@ -129,7 +129,7 @@ function apache(response, request) {
 								catch (SyntaxError) {
 							  	console.log('Invalid JSON: at language Find');
 						    	return false;
-							  }																
+							  }													
 
 							});
 						},
@@ -144,7 +144,7 @@ function apache(response, request) {
 								catch (SyntaxError) {
 							  	console.log('Invalid JSON: at Website Find');
 						    	return false;
-							  }																
+							  }													
 
 							});
 				    },
@@ -169,7 +169,7 @@ function apache(response, request) {
 								//console.log(body.pages[i].url);
 								//console.log(pages);
 							}	
-								console.log(allTerms);
+							console.log(allTerms);
 							callback(null, {'allTerms': allTerms});	
 						},
 						function(callback){
@@ -184,20 +184,22 @@ function apache(response, request) {
 						function(callback){
 							async.forEach(terms, 
 								function(arg, callback) {
-								    termsValues.push(arg.value.toLowerCase());
+								    termsValues.push(arg.value.toLowerCase());								
 										termsIds.push(new ObjectId(arg._id));
-										termsIdsS.push(arg._id);
+                    termsIdsS.push(arg._id);
 										var windex = websiteTerms.indexOf(arg._id);
 										if( windex > -1 && wterms[windex].translations.length > 0){		
 											for (var j = 0; j < wterms[windex].translations.length; j++){
 												if(wterms[windex].translations[j].lang == toLang){
 													Translation.findById(wterms[windex].translations[j].translation, function(err,data){
 														overridentrans.push(obj(data).value);
-														overridenterms.push( arg.value.toLowerCase());														
+														overridenterms.push( arg.value.toLowerCase());
 														overridenids.push(obj(data).term_id);
 														overridentrobj.push(obj(data));
+														var tw_id = termsIdsS.indexOf(obj(data).term_id);
+														termsIds.splice(tw_id,1);
 													});
-												} 
+												}
 											}
 										}
 								    callback(null,"yes");
@@ -207,7 +209,7 @@ function apache(response, request) {
 							});
 						},
 						function(callback){
-								Translation.where('term_id').in(termsIds).where('language_id' , new ObjectId(toLang)).sort('score', -1).limit(termsIds.length).run( function(err, data) {															
+								Translation.where('term_id').in(termsIds).where('language_id' , new ObjectId(toLang)).sort('score', -1).limit(termsIds.length).run( function(err, data) {													
 									translations = obj(data);
 	/**								console.log("***********************start*************************");
 									console.log("***********************translations*************************");
