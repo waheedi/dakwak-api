@@ -235,13 +235,13 @@ function apache(response, request) {
 									arg = overridenterms[yindex];
 									if(overridentrobj[yindex] != undefined ){
 										var dd = new Date(overridentrobj[yindex].updated_at);
-										resTerms.push({'term' : arg, 'trans' : htmlEncode(overridentrans[yindex]), 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
+										resTerms.push({'term' : arg, 'trans' : overridentrans[yindex] , 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
 									}
 								}else {
 									if(translations[i] != undefined ){
 										var dt = new Date(translations[i].updated_at);
 										var indxTerms = termsIdsS.indexOf(translations[i].term_id);
-										resTerms.push({'term' : termsValues[indxTerms], 'trans' :htmlEncode(translations[i].value), 'id' : termsIds[indxTerms], 'time' : dt.valueOf().toString().substring(0,10)  });
+										resTerms.push({'term' : termsValues[indxTerms], 'trans' : translations[i].value, 'id' : termsIds[indxTerms], 'time' : dt.valueOf().toString().substring(0,10)  });
 									}
 								}
 							}
@@ -263,16 +263,6 @@ function apache(response, request) {
 	}
 }
 	
-function htmlEncode(s){	
-	s = s.replace(/\'/g, "&#39;"); //no HTML equivalent as &apos is not cross browser supported
-  s = s.replace(/\"/g, "&quot;");
-  s = s.replace(/</g, "&lt;");
-  s = s.replace(/>/g, "&gt;");
-	s = s.replace(/©/g, "&copy;");
-	s = s.replace(/&/g, "&amp;");
-return s;
-
-}
 
 function obj(obj){
 	try {	
