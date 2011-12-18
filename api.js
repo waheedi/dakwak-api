@@ -7,6 +7,8 @@ var cache = require('./node-cache');
 var sys   = require('util');
 var bs = require('nodestalker');
 var client = bs.Client();
+var Encoder = require('node-html-encoder').Encoder;
+var encoder = new Encoder('entity');
 
 
 /** 
