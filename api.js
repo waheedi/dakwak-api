@@ -235,13 +235,13 @@ function apache(response, request) {
 									arg = overridenterms[yindex];
 									if(overridentrobj[yindex] != undefined ){
 										var dd = new Date(overridentrobj[yindex].updated_at);
-										resTerms.push({'term' : encoder.htmlEncode(arg), 'trans' : encoder.htmlEncode(overridentrans[yindex]), 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
+										resTerms.push({'term' : arg, 'trans' : encoder.htmlEncode(overridentrans[yindex]), 'id' : termsIds[i], 'time' : dd.getTime().toString().substring(0,10) });
 									}
 								}else {
 									if(translations[i] != undefined ){
 										var dt = new Date(translations[i].updated_at);
 										var indxTerms = termsIdsS.indexOf(translations[i].term_id);
-										resTerms.push({'term' : encoder.htmlEncode(termsValues[indxTerms]), 'trans' : encoder.htmlEncode(translations[i].value), 'id' : termsIds[indxTerms], 'time' : dt.valueOf().toString().substring(0,10)  });
+										resTerms.push({'term' : termsValues[indxTerms], 'trans' : encoder.htmlEncode(translations[i].value), 'id' : termsIds[indxTerms], 'time' : dt.valueOf().toString().substring(0,10)  });
 									}
 								}
 							}
